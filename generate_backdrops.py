@@ -63,18 +63,35 @@ def get_posters_from_source(source):
                 resp = requests.get(url, headers=headers, timeout=5)
                 if resp.status_code == 200:
                     items = resp.json()[:limit]
+                    # Collect (tmdb_id, media_type) pairs for concurrent lookup
+                    tmdb_lookups = []
                     for entry in items:
                         media_obj = entry.get('movie') or entry.get('show')
                         if media_obj and 'ids' in media_obj:
                             tmdb_id = media_obj['ids'].get('tmdb')
                             media_type = 'movie' if 'movie' in entry else 'tv'
                             if tmdb_id:
-                                tmdb_url = f"https://api.themoviedb.org/3/{media_type}/{tmdb_id}?api_key={TMDB_API_KEY}"
-                                tmdb_resp = requests.get(tmdb_url, timeout=5)
-                                if tmdb_resp.status_code == 200:
-                                    tmdb_data = tmdb_resp.json()
-                                    if tmdb_data.get('poster_path'):
-                                        posters.append(f"https://image.tmdb.org/t/p/w500{tmdb_data['poster_path']}")
+                                tmdb_lookups.append((tmdb_id, media_type))
+
+                    def _fetch_trakt_tmdb_poster(pair):
+                        tid, mtype = pair
+                        api_url = f"https://api.themoviedb.org/3/{mtype}/{tid}?api_key={TMDB_API_KEY}"
+                        r = requests.get(api_url, timeout=5)
+                        if r.status_code == 200:
+                            data = r.json()
+                            if data.get('poster_path'):
+                                return f"https://image.tmdb.org/t/p/w500{data['poster_path']}"
+                        return None
+
+                    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+                        futures = {executor.submit(_fetch_trakt_tmdb_poster, pair): pair for pair in tmdb_lookups}
+                        for future in concurrent.futures.as_completed(futures):
+                            try:
+                                result = future.result()
+                                if result:
+                                    posters.append(result)
+                            except Exception:
+                                pass
             except Exception as e:
                 print(f"Failed to fetch Trakt list {trakt_list_id}: {e}")
 
