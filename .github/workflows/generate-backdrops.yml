@@ -32,7 +32,7 @@ jobs:
         env:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
           TRAKT_CLIENT_ID: ${{ secrets.TRAKT_CLIENT_ID }}
-        run: uv run generate_backdrops.py
+        run: uv run --with requests --with Pillow python generate_backdrops.py
 
       - name: Commit and push changes
         run: |
