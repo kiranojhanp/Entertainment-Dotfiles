@@ -9310,6 +9310,125 @@
         "catalogSources": [],
         "focusGifEnabled": true,
         "heroBackdropUrl": "https://raw.githubusercontent.com/kiranojhanp/Entertainment-Dotfiles/main/nuvio/images/Tubi_TV/heroBackdropUrl.jpg"
+      },
+      {
+        "id": "folder-VIKI-STREAMING",
+        "title": "Rakuten Viki",
+        "sources": [
+          {
+            "id": "src-VIKI-POPULAR-TV",
+            "name": "Popular Series on Viki",
+            "genre": "Popular Series",
+            "title": "Popular Series on Viki",
+            "sortBy": "popularity.desc",
+            "provider": "tmdb",
+            "mediaType": "TV",
+            "tmdbSourceType": "DISCOVER",
+            "filters": {
+              "withWatchProviders": "344",
+              "watchRegion": "US"
+            }
+          },
+          {
+            "id": "src-VIKI-NEW-TV",
+            "name": "Recently Added Series",
+            "genre": "Recently Added",
+            "title": "Recently Added Series",
+            "sortBy": "first_air_date.desc",
+            "provider": "tmdb",
+            "mediaType": "TV",
+            "tmdbSourceType": "DISCOVER",
+            "filters": {
+              "withWatchProviders": "344",
+              "watchRegion": "US",
+              "voteCountGte": 5
+            }
+          },
+          {
+            "id": "src-VIKI-ROMANCE-TV",
+            "name": "Romance Dramas",
+            "genre": "Romance Dramas",
+            "title": "Romance Dramas",
+            "sortBy": "popularity.desc",
+            "provider": "tmdb",
+            "mediaType": "TV",
+            "tmdbSourceType": "DISCOVER",
+            "filters": {
+              "withWatchProviders": "344",
+              "watchRegion": "US",
+              "withGenres": "10749"
+            }
+          },
+          {
+            "id": "src-VIKI-COMEDY-TV",
+            "name": "Comedy Dramas",
+            "genre": "Comedy Dramas",
+            "title": "Comedy Dramas",
+            "sortBy": "popularity.desc",
+            "provider": "tmdb",
+            "mediaType": "TV",
+            "tmdbSourceType": "DISCOVER",
+            "filters": {
+              "withWatchProviders": "344",
+              "watchRegion": "US",
+              "withGenres": "35"
+            }
+          },
+          {
+            "id": "src-VIKI-TOP-RATED-TV",
+            "name": "Highest Rated Series",
+            "genre": "Highest Rated",
+            "title": "Highest Rated Series",
+            "sortBy": "vote_average.desc",
+            "provider": "tmdb",
+            "mediaType": "TV",
+            "tmdbSourceType": "DISCOVER",
+            "filters": {
+              "withWatchProviders": "344",
+              "watchRegion": "US",
+              "voteCountGte": 150
+            }
+          },
+          {
+            "id": "src-VIKI-POPULAR-MOVIES",
+            "name": "Popular Movies on Viki",
+            "genre": "Popular Movies",
+            "title": "Popular Movies on Viki",
+            "sortBy": "popularity.desc",
+            "provider": "tmdb",
+            "mediaType": "MOVIE",
+            "tmdbSourceType": "DISCOVER",
+            "filters": {
+              "withWatchProviders": "344",
+              "watchRegion": "US"
+            }
+          },
+          {
+            "id": "src-VIKI-ROMANCE-MOVIES",
+            "name": "Romance Movies",
+            "genre": "Romance Movies",
+            "title": "Romance Movies",
+            "sortBy": "popularity.desc",
+            "provider": "tmdb",
+            "mediaType": "MOVIE",
+            "tmdbSourceType": "DISCOVER",
+            "filters": {
+              "withWatchProviders": "344",
+              "watchRegion": "US",
+              "withGenres": "10749"
+            }
+          }
+        ],
+        "hideTitle": true,
+        "tileShape": "LANDSCAPE",
+        "coverEmoji": "",
+        "focusGifUrl": "https://raw.githubusercontent.com/kiranojhanp/Entertainment-Dotfiles/main/nuvio/images/Rakuten_Viki/focusGifUrl.gif",
+        "heroVideoUrl": "",
+        "titleLogoUrl": "https://raw.githubusercontent.com/kiranojhanp/Entertainment-Dotfiles/main/nuvio/images/Rakuten_Viki/titleLogoUrl.png",
+        "coverImageUrl": "https://raw.githubusercontent.com/kiranojhanp/Entertainment-Dotfiles/main/nuvio/images/Rakuten_Viki/coverImageUrl.png",
+        "catalogSources": [],
+        "focusGifEnabled": true,
+        "heroBackdropUrl": "https://raw.githubusercontent.com/kiranojhanp/Entertainment-Dotfiles/main/nuvio/images/Rakuten_Viki/heroBackdropUrl.jpg"
       }
     ],
     "pinToTop": true,

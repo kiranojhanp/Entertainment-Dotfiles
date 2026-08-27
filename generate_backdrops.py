@@ -5,6 +5,7 @@ import random
 import requests
 import concurrent.futures
 import math
+import argparse
 from io import BytesIO
 from PIL import Image, ImageDraw, ImageOps
 
@@ -54,6 +55,7 @@ PROVIDER_ID_FALLBACK = {
     "Hayu": 296,
     "Magellan TV": 551,
     "Magellan": 551,
+    "Rakuten Viki": 344
 }
 
 # Cache of TMDB watch/providers lookups so we never re-check the same title twice in one run
@@ -67,22 +69,19 @@ def sanitize_filename(title):
 
 
 def get_provider_id(folder):
-    """
-    Extracts the TMDB provider ID from a folder's DISCOVER sources.
-    Priority:
-      1. JSON DISCOVER provider ID (withWatchProviders)
-      2. Fallback provider ID from PROVIDER_ID_FALLBACK
-      3. Raises ValueError if neither exists to avoid unverified title leaks.
-    """
     folder_title = folder.get("title", "Unknown Folder")
     
-    # Priority 1: Extract from JSON
+    # Priority 1: Extract from JSON (support both schema variants)
     for source in folder.get("sources", []):
-        if source.get("type") == "tmdb" and source.get("action") == "discover":
-            wp = source.get("filters", {}).get("withWatchProviders")
+        is_tmdb = (source.get("provider") == "tmdb" or source.get("type") == "tmdb")
+        is_discover = (source.get("tmdbSourceType") == "DISCOVER" or source.get("action") == "discover")
+        
+        if is_tmdb and is_discover:
+            filters = source.get("filters", {})
+            wp = filters.get("withWatchProviders") or filters.get("with_watch_providers")
             if wp is not None:
                 try:
-                    return int(str(wp).split(",")[0])  # take first if multiple ids are listed
+                    return int(str(wp).split(",")[0])
                 except (ValueError, TypeError):
                     pass
 
@@ -416,6 +415,14 @@ def create_column_grid(poster_urls, save_path):
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Generate streaming service backdrops.")
+    parser.add_argument(
+        "-p", "--providers",
+        nargs="+",
+        help="List of specific provider folder titles to process (e.g. Netflix 'Apple TV+'). If omitted, runs all."
+    )
+    args = parser.parse_args()
+
     if not TMDB_API_KEY:
         print("Error: TMDB_API_KEY environment variable is not set.")
         exit(1)
@@ -427,8 +434,17 @@ def main():
         print(f"Error loading JSON configuration: {e}")
         exit(1)
 
+    # Convert provided arguments to lowercase for case-insensitive matching
+    target_providers = [p.lower() for p in args.providers] if args.providers else None
+
     for folder in config.get("folders", []):
-        platform_name = sanitize_filename(folder.get("title", "Unknown"))
+        folder_title = folder.get("title", "Unknown")
+        
+        # Skip this folder if target_providers is set and the title isn't in the list
+        if target_providers and folder_title.lower() not in target_providers:
+            continue
+
+        platform_name = sanitize_filename(folder_title)
         print(f"\nProcessing {platform_name}...")
 
         try:
